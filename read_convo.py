@@ -20,7 +20,7 @@ def get_best_response(query, conversations, threshold=70):
         index = inputs.index(best_match)
         return conversations[index]['response']
     else:
-        return "Sorry, I don't understand that."
+        return "none"
 
 # Main function to interact with the user
 def main(user_input):
@@ -34,9 +34,10 @@ def main(user_input):
     response = get_best_response(user_input, conversations)
         
         # Print the response
-    print(f"Denver: {response}")
+    # print(f"Denver: {response}")
+    return response
 
-if __name__ == "__main__":
-    while True:
-        user_input = input("You: ")
-        main(user_input)
+# if __name__ == "__main__":
+#     while True:
+#         user_input = input("You: ")
+#         main(user_input)

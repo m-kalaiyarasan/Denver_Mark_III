@@ -1,20 +1,18 @@
 # Define the intents and corresponding keywords
 intents = {
     "check_weather" : ["weather ","climate "],
+    "search_query" : ["what ", "when ", "why ", "is ", " mean "," meant ", "who "],
     "set_reminder" : ["remind ", "reminder"],
     "play_music" : ["song", "play"],
     "send_message" : [" whatsapp ", " message ", " send "],
     "read_news" : [" news "],
     "make_call" : ["call ", "phone "],
     "get_time" : ["time"," clock "," is "," now"],
-    "search_query" : ["what ", "when ", "why ", " is ", " mean "," meant ", "who "],
     "open_request" : ["open","show"],
     "thank_msg" : ["thank you","thankyou"],
     "face_rec" : [" scan "," face "],
     "type_key" : ["type ","take a note ","note"],
     "window_fun" : ["close","window","open",],
-    "greet_msg" : ["hello","denver","hey","hai",],
-    "" : [] 
 }
 
 def classify_intent(text):

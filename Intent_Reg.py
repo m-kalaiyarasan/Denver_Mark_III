@@ -13,6 +13,7 @@ intents = {
     "face_rec" : [" scan "," face "],
     "type_key" : ["type ","take a note ","note"],
     "window_fun" : ["close","window","open",],
+    "control_mode" : ["control mode","mode","windows",]
 }
 
 def classify_intent(text):
@@ -31,9 +32,6 @@ def classify_intent(text):
 
 def intent_reg(user_input):
     while True:
-        if user_input.lower() in ["exit", "quit", "bye"]:
-            print("Assistant: Goodbye!")
-            break
         intent = classify_intent(user_input)
         return(intent)
 

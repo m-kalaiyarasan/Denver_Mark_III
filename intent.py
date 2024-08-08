@@ -19,6 +19,9 @@ import urllib.parse
 import time
 import pywhatkit
 import re
+import subprocess
+import pywhatkit
+import pyautogui
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init('sapi5')
@@ -42,7 +45,7 @@ def take_command():
     except Exception as e:
         print(e)
         speak("")
-        query = "None"
+        query = "none"
     return query.lower()
 
 def preprocess(sentence):
@@ -75,12 +78,12 @@ def search_google(query, retries=3, delay=5):
 def make_function(response,user_input):
     user_input_tokens = preprocess(user_input)
     if "check_weather" in response:
-        print("weather")
+        return("weather")
     elif "set_reminder" in response:
-        print("remainder")
+        return("remainder")
     elif "play_music" in response:
         if "local" in user_input_tokens:
-            print("local music")
+            return("local music")
         elif "play" in user_input_tokens:
             user_input=user_input.replace('play','') 
             user_input= user_input.replace('denver','')
@@ -95,6 +98,62 @@ def make_function(response,user_input):
     elif "search_query" in response:
         answer = search_google(user_input + " in one line")
         return(answer)
+    elif "open_request" in response:
+        if 'youtube' in user_input_tokens:
+            webbrowser.open("https://www.youtube.com")
+            return "sure sir, Opening YouTube"
+        elif 'google' in user_input_tokens:
+            webbrowser.open("https://www.google.com")
+            return "Sure sir, opening google"
+        elif 'inbox' in user_input_tokens:
+            webbrowser.open("https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox")
+            return "sure sir, Opening mail inbox"
+        elif 'whatsapp' in user_input_tokens:
+            webbrowser.open("https://web.whatsapp.com/")
+            return "sure sir, Opening whatsapp"
+        elif 'notepad' in user_input_tokens:
+            subprocess.run(['notepad.exe'])
+            return "sure sir, Opening notepad"
+    elif "type_key" in response:
+        if "notepad" in user_input_tokens:
+            subprocess.run(['notepad.exe'])
+            time.sleep(3)
+        if "type" in  user_input_tokens:
+            # match = re.search(r'type\s+(.+)', user_input, re.IGNORECASE)
+            # text_to_type = match.group(1)
+            # pyautogui.write(text_to_type)
+            user_input=user_input.replace('type','')
+            speak(".writting sir")
+            pyautogui.write(user_input)
+            return "none"
+    elif "control_mode" in response:
+        print("control mode activated sir")
+        speak("control mode activated sir")
+        while True:
+            # user_input = input("control: ")
+            print("in control mode")
+            user_input = take_command()
+            user_input_tokens = preprocess(user_input)
+            if "exit" in user_input_tokens or "normal" in user_input_tokens:
+                return "sure sir"
+            elif "type" in user_input_tokens:
+                user_input=user_input.replace('type','')
+                speak(".writting sir")
+                pyautogui.write(user_input)
+            elif "search" in user_input_tokens or "navigate" in user_input_tokens:
+                pyautogui.press('enter')
+            elif "close" in user_input_tokens:
+                if "close window" in user_input_tokens:
+                    pyautogui.hotkey('alt','f4')  
+                pyautogui.hotkey('ctrl','w')    
+            elif "open" in user_input_tokens:
+                make_function("open_request",user_input)
+                  
+        
+    
+    
+    
+    return "none"
     
 while True:
     # user_input = input("enter: ")
@@ -102,18 +161,18 @@ while True:
     # Assume read_convo.main() generates the actual intent
     response = read_convo.main(user_input)
     
-    if response == "none":
+    if response == "none" or response == "None":
         # Take a convo from JSON file using read_convo.py code
         response = Intent_Reg.intent_reg(user_input)
         print("intent: " + response)
         # Make sure `make_function` is defined and can handle the intent
         func_call = make_function(response, user_input)
-        if response != "none":
+        if func_call != "none" :
             print(func_call)
             speak(func_call)
-        else:
-            print("iam not trained yet")
-            speak("i'am not trained yet")
+        # else:
+        #     print("iam not trained yet")
+        #     speak("i'am not trained yet")
     else:
         # Print the response if it's not "none"
         print(response)

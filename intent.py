@@ -17,8 +17,10 @@ from bs4 import BeautifulSoup
 import urllib.parse
 import time
 import pywhatkit
+import re
 
-conversation = [
+
+convo_general = [
     ("hello javis", "ima not javis"),
     ("javis", "Iam not jarvis"),
     ("hey Denver", ",Yes sir"),
@@ -44,9 +46,9 @@ def jaccard_similarity(set1, set2):
     union = len(set1.union(set2))
     return intersection / union
 
-def intent_req(user_input):
+def intent_req(user_input,convo1):
     user_input_tokens = preprocess(user_input)
-
+    conversation = convo1
     max_similarity = 0
     best_response = "none"
     for pattern, response in conversation:
@@ -56,6 +58,8 @@ def intent_req(user_input):
             max_similarity = similarity
             best_response = response
     return(best_response)
+
+
 def make_function(response,user_input_tokens,user_input):
     if "check_weather" in response:
         print("weather")
@@ -69,6 +73,12 @@ def make_function(response,user_input_tokens,user_input):
             user_input= user_input.replace('denver','')
             pywhatkit.playonyt(user_input)
             return "playing"+user_input
+    elif "send_message" in response:
+        pattern = r"\bsend\s+(a\s+(whatsapp\s+)?)?message\s+to\s+([A-Z][a-z]*)"
+        match = re.search(pattern, user_input, re.IGNORECASE)
+        if match:
+            name = match.group(3)
+            print(name)
     
                         
         
@@ -79,7 +89,7 @@ while True:
     print("intent: "+response)
     
     if "none" in response:
-        response = intent_req(user_input)
+        response = intent_req(user_input,convo_general)
         print(response)
     else:
         make_function(response,user_input_tokens,user_input)

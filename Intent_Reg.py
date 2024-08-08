@@ -12,7 +12,7 @@ intents = {
     "thank_msg" : ["thank you","thankyou"],
     "face_rec" : [" scan "," face "],
     "type_key" : ["type ","take a note ","note"],
-    "window_fun" : ["close","window","open",],
+    "window_fun" : ["close","window","open","send"],
     "control_mode" : ["control mode","mode","windows",]
 }
 

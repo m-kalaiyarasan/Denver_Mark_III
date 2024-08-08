@@ -22,6 +22,7 @@ import re
 import subprocess
 import pywhatkit
 import pyautogui
+import send_whatsapp
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init('sapi5')
@@ -95,6 +96,19 @@ def make_function(response,user_input):
         if match:
             name = match.group(3)
             print(name)
+            print("message ?")
+            speak("message ?")
+            message = take_command()
+            send_whatsapp.data(name,message)
+        else:
+            print("test ")
+            print("Name ?")
+            speak("Name")
+            name = take_command()
+            print("message ?")
+            speak("message ?")
+            message = take_command()
+            send_whatsapp.data(name,message)
     elif "search_query" in response:
         answer = search_google(user_input + " in one line")
         return(answer)
@@ -148,6 +162,10 @@ def make_function(response,user_input):
                 pyautogui.hotkey('ctrl','w')    
             elif "open" in user_input_tokens:
                 make_function("open_request",user_input)
+    elif "window_fun" in response:
+        if "send" in user_input_tokens:
+            pyautogui.press('enter')
+            
                   
         
     
@@ -156,8 +174,8 @@ def make_function(response,user_input):
     return "none"
     
 while True:
-    # user_input = input("enter: ")
-    user_input = take_command()
+    user_input = input("enter: ")
+    # user_input = take_command()
     # Assume read_convo.main() generates the actual intent
     response = read_convo.main(user_input)
     

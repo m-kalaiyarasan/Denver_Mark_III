@@ -1,7 +1,24 @@
 
-import nltk
+import Intent_Reg
 
-intent = [
+
+import sys
+import nltk
+import pyautogui
+import speech_recognition as sr
+import pyttsx3
+import datetime
+import wikipedia
+import webbrowser
+import os
+import requests
+import pyaudio
+from bs4 import BeautifulSoup
+import urllib.parse
+import time
+import pywhatkit
+
+conversation = [
     ("hello javis", "ima not javis"),
     ("javis", "Iam not jarvis"),
     ("hey Denver", ",Yes sir"),
@@ -18,17 +35,6 @@ intent = [
     ("javis", "Iam not jarvis, iam denver, developed by kalaiyarasan"),
     ("vignesh", "Hello mister vignesh")
 ]
-intents = {
-    "check_weather": ["weather", "forecast"],
-    "set_reminder": ["remind", "reminder"],
-    "play_music": ["song", "music"],
-    "send_message" : ["whatsapp","message","send"],
-    "read_news" : ["news"],
-    "make_call" : ["call" , "phone"],
-    "Search_query" : ["what","when","why","is"],
-    
-    }
-
 def preprocess(sentence):
     tokens = nltk.word_tokenize(sentence.lower())
     return tokens
@@ -38,16 +44,42 @@ def jaccard_similarity(set1, set2):
     union = len(set1.union(set2))
     return intersection / union
 
-user_input = input("enter :")
-user_input_tokens = preprocess(user_input)
+def intent_req(user_input):
+    user_input_tokens = preprocess(user_input)
 
-max_similarity = 0
-best_response = "none"
-for pattern, response in intents:
-    pattern_tokens = preprocess(pattern)
-    similarity = jaccard_similarity(set(user_input_tokens), set(pattern_tokens))
-    if similarity > max_similarity:
-        max_similarity = similarity
-        best_response = response
-print(best_response)
+    max_similarity = 0
+    best_response = "none"
+    for pattern, response in conversation:
+        pattern_tokens = preprocess(pattern)
+        similarity = jaccard_similarity(set(user_input_tokens), set(pattern_tokens))
+        if similarity > max_similarity:
+            max_similarity = similarity
+            best_response = response
+    return(best_response)
+def make_function(response,user_input_tokens,user_input):
+    if "check_weather" in response:
+        print("weather")
+    elif "set_reminder" in response:
+        print("remainder")
+    elif "play_music" in response:
+        if "local" in user_input_tokens:
+            print("local music")
+        elif "play" in user_input_tokens:
+            user_input=user_input.replace('play','') 
+            user_input= user_input.replace('denver','')
+            pywhatkit.playonyt(user_input)
+            return "playing"+user_input
+    
+                        
         
+while True:
+    user_input = input("enter :")
+    response = Intent_Reg.intent_reg(user_input)
+    user_input_tokens = preprocess(user_input)
+    print("intent: "+response)
+    
+    if "none" in response:
+        response = intent_req(user_input)
+        print(response)
+    else:
+        make_function(response,user_input_tokens,user_input)

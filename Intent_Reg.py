@@ -1,10 +1,10 @@
 # Define the intents and corresponding keywords
 intents = {
     "check_weather" : ["weather ","climate "],
-    "search_query" : ["what ", "when ", "why ", "is ", " mean "," meant ", "who ","tell ","about"],
+    "search_query" : ["what ", "when ", "why ", "is ", " mean "," meant ", "who ","tell ","about","does"],
     "set_reminder" : ["remind ", "reminder"],
     "play_music" : ["song", "play"],
-    "send_message" : [" whatsapp ", " message ", " send "],
+    "send_message" : [" whatsapp ", " message ", "send "],
     "read_news" : [" news "],
     "make_call" : ["call ", "phone "],
     "get_time" : ["time"," clock "," is "," now"],
@@ -12,9 +12,19 @@ intents = {
     "thank_msg" : ["thank you","thankyou"],
     "face_rec" : [" scan "," face "],
     "type_key" : ["type ","take a note ","note"],
-    "window_fun" : ["close","window","open","send"],
+    "window_fun" : ["close","window","open"],
     "control_mode" : ["control mode","mode","windows",]
 }
+
+
+# Example usage
+# text_output = """This is an example output. It contains more than twenty-five words, 
+# and we want to make sure that only the first twenty-five words or the first two lines 
+# are printed. This way, we can control the amount of text that is displayed to the user, 
+# which is useful in scenarios where the text might be too long to display in its entirety."""
+
+# print_limited_output(text_output)
+
 
 def classify_intent(text):
     text_lower = text.lower()

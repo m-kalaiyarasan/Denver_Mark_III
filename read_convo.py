@@ -7,7 +7,7 @@ def load_conversations(file_path):
         return json.load(json_file)
 
 # Function to find the best matching response based on similarity score
-def get_best_response(query, conversations, threshold=70):
+def get_best_response(query, conversations, threshold=80):
     # Extract input texts from conversations
     inputs = [convo['input'] for convo in conversations]
     

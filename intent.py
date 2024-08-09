@@ -74,6 +74,27 @@ def preprocess(sentence):
 #                 raise
 #     return "Failed to retrieve data after multiple attempts"
 
+def print_limited_output(text, max_words=15, max_lines=1):
+    # Split the text into words and lines
+    words = text.split()
+    lines = text.splitlines()
+
+    # Case 1: If the total words are less than or equal to max_words
+    if len(words) <= max_words:
+        limited_output = ' '.join(words[:max_words])
+    else:
+        # Get the first max_words words
+        limited_output = ' '.join(words[:max_words])
+
+    # Case 2: If the total lines are less than or equal to max_lines
+    if len(lines) <= max_lines:
+        limited_output = '\n'.join(lines[:max_lines])
+    else:
+        # Get the first max_lines lines
+        limited_output = '\n'.join(lines[:max_lines])
+
+    return(limited_output)
+
 def search_google(query, retries=3, delay=5):
     query = urllib.parse.quote_plus(query)
     url = f"https://www.google.com/search?q={query}"
@@ -86,7 +107,10 @@ def search_google(query, retries=3, delay=5):
             soup = BeautifulSoup(response.text, 'html.parser')
             snippet = soup.find('div', class_='BNeawe s3v9rd AP7Wnd')
             if snippet:
-                return snippet.get_text()
+                snippet_text = snippet.get_text()
+                # Print the limited output (first 25 words or 2 lines)
+                limited_snippet = print_limited_output(snippet_text)
+                return limited_snippet
             else:
                 return "No snippet found."
         except requests.exceptions.HTTPError as e:
@@ -129,7 +153,14 @@ def make_function(response,user_input):
         return("remainder")
     elif "play_music" in response:
         if "local" in user_input_tokens:
-            return("local music")
+            if 'local' in user_input_tokens:
+                music_dir = 'E:\\music\\hck'  # Change this to your music directory
+                if os.path.isdir(music_dir):
+                    songs = os.listdir(music_dir)
+                    if songs:
+                        os.startfile(os.path.join(music_dir, songs[0]))
+                        return("Playing music")
+                        
         elif "play" in user_input_tokens:
             user_input=user_input.replace('play','') 
             user_input= user_input.replace('denver','')
@@ -162,15 +193,18 @@ def make_function(response,user_input):
             print("test ")
             print("Name ?")
             speak("Name")
-            name = take_command()
+            name = input("Name :")
+            # name = take_command()
             print("message ?")
             speak("message ?")
-            message = take_command()
+            message = input("message :")
+            # message = take_command()
             send_whatsapp.data(name,message)
         return "none"
     elif "search_query" in response:
         answer = search_google(user_input + " in one line")
         return(answer)
+        
     elif "open_request" in response:
         if 'youtube' in user_input_tokens:
             webbrowser.open("https://www.youtube.com")
@@ -239,7 +273,7 @@ while True:
     if response == "none" or response == "None":
         # Take a convo from JSON file using read_convo.py code
         response = Intent_Reg.intent_reg(user_input)
-        print("intent: " + response)
+        # print("intent: " + response)
         # Make sure `make_function` is defined and can handle the intent
         func_call = make_function(response, user_input)
         if func_call != "none" :

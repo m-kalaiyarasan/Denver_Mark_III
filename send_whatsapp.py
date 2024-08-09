@@ -32,11 +32,6 @@
 # # Example usage:
 # # data("kalai", "Hello")
 
-
-
-
-
-
 import webbrowser
 
 kalai = "7339614080"

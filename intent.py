@@ -53,6 +53,29 @@ def preprocess(sentence):
     tokens = nltk.word_tokenize(sentence.lower())
     return tokens
 
+# def search_google(query, retries=3, delay=5):
+#     query = urllib.parse.quote_plus(query)
+#     url = f"https://www.google.com/search?q={query}"
+#     headers = {"User-Agent": "Mozilla/5.0"}
+
+#     for attempt in range(retries):
+#         try:
+#             response = requests.get(url, headers=headers)
+#             response.raise_for_status()
+#             soup = BeautifulSoup(response.text, 'html.parser')
+#             snippet = soup.find('div', class_='BNeawe s3v9rd AP7Wnd')
+#             if snippet:
+#                 return snippet.get_text()
+#             else:
+#                 return "No snippet found."
+#         except requests.exceptions.HTTPError as e:
+#             if e.response.status_code == 429:
+#                 print(f"Rate limit exceeded. Retrying in {delay} seconds...")
+#                 time.sleep(delay)
+#             else:
+#                 raise
+#     return "Failed to retrieve data after multiple attempts"
+
 def search_google(query, retries=3, delay=5):
     query = urllib.parse.quote_plus(query)
     url = f"https://www.google.com/search?q={query}"
@@ -70,16 +93,40 @@ def search_google(query, retries=3, delay=5):
                 return "No snippet found."
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
-                print(f"Rate limit exceeded. Retrying in {delay} seconds...")
+                print(f"Rate limit exceeded. Retrying in {delay} seconds... (Attempt {attempt + 1}/{retries})")
                 time.sleep(delay)
             else:
                 raise
     return "Failed to retrieve data after multiple attempts"
 
+
+def get_weather(city):
+    base_url = f"http://wttr.in/{city}?format=%C+%t"  # Adjust format to exclude emoji
+    try:
+        response = requests.get(base_url)
+        response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
+        return response.text + " sir"
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching weather: {e}")
+        return "I couldn't retrieve the weather information right now. Please try again later."
+
 def make_function(response,user_input):
     user_input_tokens = preprocess(user_input)
     if "check_weather" in response:
-        return("weather")
+        city = None
+        if "in" in user_input_tokens:
+            in_index = user_input_tokens.index("in")
+            if in_index + 1 < len(user_input_tokens):
+                city = user_input_tokens[in_index + 1]
+        if not city:
+            for token in user_input_tokens:
+                if token not in ["weather", "in"]:
+                    city = token
+                    break
+        if city:
+            return get_weather(city)
+        else:
+            return "I couldn't determine the city. Please specify the city name."
     elif "set_reminder" in response:
         return("remainder")
     elif "play_music" in response:
@@ -90,15 +137,28 @@ def make_function(response,user_input):
             user_input= user_input.replace('denver','')
             pywhatkit.playonyt(user_input)
             return "playing "+user_input
-    elif "send_message" in response:
-        pattern = r"\bsend\s+(a\s+(whatsapp\s+)?)?message\s+to\s+([A-Z][a-z]*)"
+        
+        
+    elif "send_message" in response or "make_call" in response:
+        if "send_message" in response:
+            pattern = r"\bsend\s+(a\s+(whatsapp\s+)?)?message\s+to\s+([A-Z][a-z]*)"
+        if "make_call" in response:
+            pattern = r"\bcall\b\s+(to\s+)?([A-Z][a-z]*)"
         match = re.search(pattern, user_input, re.IGNORECASE)
         if match:
-            name = match.group(3)
-            print(name)
-            print("message ?")
-            speak("message ?")
-            message = take_command()
+            if "send_message" in response:
+                name = match.group(3)
+                print(name)
+            else:
+                name = match.group(2)
+                print(name)
+            if "make_call" in response:
+                message = "make_call"
+            else:
+                print("message ?")
+                speak("message ?")
+                # message = take_command()
+                message = input("message :")
             send_whatsapp.data(name,message)
         else:
             print("test ")
@@ -109,6 +169,7 @@ def make_function(response,user_input):
             speak("message ?")
             message = take_command()
             send_whatsapp.data(name,message)
+        return "none"
     elif "search_query" in response:
         answer = search_google(user_input + " in one line")
         return(answer)
@@ -165,7 +226,10 @@ def make_function(response,user_input):
     elif "window_fun" in response:
         if "send" in user_input_tokens:
             pyautogui.press('enter')
-            
+    elif "get_time" in response:
+        current_time = datetime.datetime.now().strftime("%I:%M %p")
+        return f"The current time is {current_time}, sir "
+        
                   
         
     

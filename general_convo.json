@@ -1,7 +1,7 @@
 [
     {
         "input": "hello javis",
-        "response": "ima not javis"
+        "response": "iam not javis"
     },
     {
         "input": "javis",
@@ -181,7 +181,7 @@
     },
     {
         "input": "who are you?",
-        "response": "I'm an AI here to help you with your questions."
+        "response": "I'm Denver, An AI assistant here to help you with your questions."
     },
     {
         "input": "can you help me?",

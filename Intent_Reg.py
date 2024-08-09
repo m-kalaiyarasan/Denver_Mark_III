@@ -1,7 +1,7 @@
 # Define the intents and corresponding keywords
 intents = {
     "check_weather" : ["weather ","climate "],
-    "search_query" : ["what ", "when ", "why ", "is ", " mean "," meant ", "who "],
+    "search_query" : ["what ", "when ", "why ", "is ", " mean "," meant ", "who ","tell ","about"],
     "set_reminder" : ["remind ", "reminder"],
     "play_music" : ["song", "play"],
     "send_message" : [" whatsapp ", " message ", " send "],

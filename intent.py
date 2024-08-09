@@ -1,8 +1,6 @@
 
 import Intent_Reg
 import read_convo
-
-
 import sys
 import nltk
 import pyautogui
@@ -229,12 +227,7 @@ def make_function(response,user_input):
     elif "get_time" in response:
         current_time = datetime.datetime.now().strftime("%I:%M %p")
         return f"The current time is {current_time}, sir "
-        
-                  
-        
-    
-    
-    
+      
     return "none"
     
 while True:

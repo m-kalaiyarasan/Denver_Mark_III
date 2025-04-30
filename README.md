@@ -1,5 +1,5 @@
 ## Denver version 3.0
-An Ai for your day to day life inspired by an jarvis in super hero movie called ironman
+An Ai for your day to day life inspired by a jarvis in superhero movie called iron man
 
 ##tasks
 1. voice assitant
